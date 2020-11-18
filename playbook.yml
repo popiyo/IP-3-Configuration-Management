@@ -1,6 +1,41 @@
 ---
 - hosts: all
- become: yes
+  become: yes
 
- vars_files:
-   - vars.yml
+  vars:
+    - homeDir: /home/ubuntu
+    - appDir : app
+    - repo: yolo
+    - account: Vinge1718
+    - privateKey: /Users/milos/.ssh/id_rsa
+    - packages: ['build-essential','npm', 'nodejs', 'git', 'mcrypt', 'nginx', 'curl']
+
+  tasks:
+   - name: Install Packages
+     apt: name={{ packages }}  update_cache=yes state=latest
+     
+   - name: Install pm2
+     npm: name=pm2 global=yes production=yes
+
+   - name: Create APP Directory
+     file: path={{homeDir}}/{{appDir}} state=directory
+
+   - name: Clone a repo 
+     git:
+      repo: https://github.com/Vinge1718/yolo.git
+      dest: dest={{homeDir}}/{{appDir}}
+     register: git_finished
+
+   - name: Running NPM install
+     npm: path={{homeDir}}/{{appDir}}/backened
+     register: npm_finished
+     when: git_finished.changed
+
+   - name: Stop APP
+     command: pm2 stop app chdir={{homeDir}}/{{appDir}}/backened
+     ignore_errors: yes
+
+   - name: Start APP
+     command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backened
+     ignore_errors: yes
+     when: npm_finished.changed
