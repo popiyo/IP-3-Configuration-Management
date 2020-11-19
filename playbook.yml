@@ -4,38 +4,81 @@
 
   vars:
     - homeDir: /home/ubuntu
-    - appDir : app
-    - repo: yolo
-    - account: Vinge1718
-    - privateKey: /Users/milos/.ssh/id_rsa
+    - appDir : yolo
     - packages: ['build-essential','npm', 'nodejs', 'git', 'mcrypt', 'nginx', 'curl']
 
   tasks:
    - name: Install Packages
      apt: name={{ packages }}  update_cache=yes state=latest
+     ignore_errors: yes
      
-   - name: Install pm2
-     npm: name=pm2 global=yes production=yes
-
    - name: Create APP Directory
      file: path={{homeDir}}/{{appDir}} state=directory
 
    - name: Clone a repo 
      git:
       repo: https://github.com/Vinge1718/yolo.git
-      dest: dest={{homeDir}}/{{appDir}}
+      dest: "{{homeDir}}/{{appDir}}"
+      force: yes
      register: git_finished
 
    - name: Running NPM install
-     npm: path={{homeDir}}/{{appDir}}/backened
+     npm: path={{homeDir}}/{{appDir}}/client
      register: npm_finished
      when: git_finished.changed
 
-   - name: Stop APP
-     command: pm2 stop app chdir={{homeDir}}/{{appDir}}/backened
+   - name: Build the app
+     command: npm run build chdir={{homeDir}}/{{appDir}}/client
      ignore_errors: yes
 
-   - name: Start APP
-     command: pm2 start index.js --name app chdir={{homeDir}}/{{appDir}}/backened
+
+   - name: Prepare the app for static server deployment
+     command: npm install -g serve chdir={{homeDir}}/{{appDir}}/client/build
      ignore_errors: yes
-     when: npm_finished.changed
+
+
+   - name: Change Persmission to allow Nginx to access the folder 
+     file:
+       path: "{{homeDir}}/{{appDir}}/client/build"
+       mode: 0755
+
+
+   - file:
+      path: /etc/nginx/sites-available/default
+      state: absent
+
+   
+   - file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+
+     
+   - name: create the file to Virtual Host the yolo app
+     blockinfile:
+      path: /etc/nginx/sites-available/ecommerce
+      create: yes
+      block: |
+       server {
+                listen 80;
+                server_name 192.168.60.10 localhost 127.0.0.1;
+ 
+                root /home/ubuntu/yolo/client/build;
+                index index.html index.htm;
+                location / {
+                        try_files $uri /index.html;
+                }
+ 
+        }
+
+
+   - name: Create symbolic link to Virtual Host file
+     file:
+      src: /etc/nginx/sites-available/ecommerce
+      dest: /etc/nginx/sites-enabled/ecommerce
+      state: link
+
+
+   - name: Restart Nginx
+     systemd:
+      state: restarted
+      name: nginx
