@@ -6,14 +6,9 @@
   args:
     executable: /bin/bash
 
+ 
 - name: List file for Mongo DB
-<<<<<<< HEAD
-  shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
-  args:
-    executable: /bin/bash
-=======
-  command: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list 
->>>>>>> Stage 2 build
+  command: "echo \"deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse\" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list"
 
 
 - name: Reload Local package database
