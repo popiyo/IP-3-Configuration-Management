@@ -1,0 +1,9 @@
+#home dir
+homeDir: /home/ubuntu
+
+#app dir
+appDir : yolo
+
+#packages
+packages: [ 'git', 'docker.io', 'curl']
+

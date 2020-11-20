@@ -1,18 +1,13 @@
 ---
 - hosts: all
   become: yes
+  vars_files:
+    - vars.yml 
 
-   
-
-  vars:
-   - homeDir: /home/ubuntu
-   - appDir : yolo
-   - packages: ['npm' , 'git', 'docker.io', 'curl']
-
- 
  
   roles:
- #  - mongodb_install
- #  - nginx_setup
+    - mongo_setup
     - app_set_up
     - docker_app_build
+    - app_set_up_BE
+    - docker_app_BE_build

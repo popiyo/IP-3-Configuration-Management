@@ -13,8 +13,25 @@
    force: yes
   register: git_finished
 
-    
-- name: reate the docker file for deployment
+   
+
+- name: Replace localhost:5000 in package.json
+  replace:
+    path: "{{homeDir}}/{{appDir}}/client/package.json"
+    regexp: '(?:^|\W)http://localhost:5000(?:$|\W)'
+    replace: '"http://192.168.254.129:5000"'
+   
+
+- name: Replace localhost:5000 in src/components/ProductControl.js
+  replace:
+    path: "{{homeDir}}/{{appDir}}/client/src/components/ProductControl.js"
+    regexp: '(?:^|\W)http://localhost:5000(?:$|\W)'
+    replace: "'http://192.168.254.129:5000/"
+
+
+ 
+ 
+- name: Create the docker file for deployment
   blockinfile:
    path: "{{homeDir}}/{{appDir}}/client/Dockerfile"
    create: yes
