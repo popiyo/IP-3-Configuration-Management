@@ -1,0 +1,45 @@
+---
+- name: Install Packages
+  apt: name={{ packages }}  update_cache=yes state=latest
+  ignore_errors: yes
+     
+- name: Create APP Directory
+  file: path={{homeDir}}/{{appDir}} state=directory
+
+- name: Clone a repo 
+  git:
+   repo: https://github.com/Vinge1718/yolo.git
+   dest: "{{homeDir}}/{{appDir}}"
+   force: yes
+  register: git_finished
+
+    
+- name: reate the docker file for deployment
+  blockinfile:
+   path: "{{homeDir}}/{{appDir}}/client/Dockerfile"
+   create: yes
+   block: |
+
+    FROM node:12
+
+    # Create app directory
+    WORKDIR /usr/src/app
+
+    # Install app dependencies
+    # A wildcard is used to ensure both package.json AND package-lock.json are copied
+    # where available (npm@5+)
+    COPY package*.json ./
+
+    #RUN npm install
+    # If you are building your code for production
+    RUN npm ci --only=production
+
+    # Bundle app source
+    COPY . .
+
+    EXPOSE 3000
+    ENTRYPOINT [ "npm", "start" ]
+
+
+
+    
