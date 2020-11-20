@@ -2,8 +2,9 @@
 
 - name: Build the app
   command: docker build -t popiyo/ecommerce . chdir={{homeDir}}/{{appDir}}/client
-
+  ignore_errors: yes
 
 
 - name: RUN the container
   command: docker run -p 80:3000 -it -d  popiyo/ecommerce bin/bash  
+  ignore_errors: yes
