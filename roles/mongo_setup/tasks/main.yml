@@ -1,4 +1,3 @@
----
 
 
 - name: Get Key
@@ -7,14 +6,9 @@
     executable: /bin/bash
 
 - name: List file for Mongo DB
-<<<<<<< HEAD
   shell: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
   args:
     executable: /bin/bash
-=======
-  command: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list 
->>>>>>> Stage 2 build
-
 
 - name: Reload Local package database
   command: apt update 
@@ -22,6 +16,18 @@
 
 - name: Install MondoDb Packages
   command: apt install -y mongodb-org
+
+
+#- name: Setup Mongo Config File
+#  command: mongod -f /etc/mongod.conf
+
+#- name: PERSISTENT data storage
+#  lineinfile:
+#    path: /etc/mongod.conf
+#    regexp: '^  dbPath: /var/lib/mongodb'
+#    line: '  dbPath: /vagrant/mongo_data'
+
+
 
 
 - name: Start the Database
@@ -36,7 +42,8 @@
   command: systemctl enable mongod
 
 
-- lineinfile:
+- name: Allow access of DB from network
+  lineinfile:
     path: /etc/mongod.conf
     regexp: '^  bindIp: 127.0.0.1'
     line: '  bindIp: 0.0.0.0'

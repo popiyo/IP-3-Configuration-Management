@@ -19,14 +19,14 @@
   replace:
     path: "{{homeDir}}/{{appDir}}/client/package.json"
     regexp: '(?:^|\W)http://localhost:5000(?:$|\W)'
-    replace: '"http://192.168.254.129:5000"'
+    replace: '"http://192.168.60.10:5000"'
    
 
 - name: Replace localhost:5000 in src/components/ProductControl.js
   replace:
     path: "{{homeDir}}/{{appDir}}/client/src/components/ProductControl.js"
     regexp: '(?:^|\W)http://localhost:5000(?:$|\W)'
-    replace: "'http://192.168.254.129:5000/"
+    replace: "'http://192.168.60.10:5000/"
 
 
  
