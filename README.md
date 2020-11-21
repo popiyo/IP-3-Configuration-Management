@@ -4,8 +4,8 @@ Requirements
 Make sure that you have the following installed:
 - Ansible 2.10.3 
 - Git
-- Vagrant
-- Virtual Box
+- Vagrant 2.2.13
+- Oracle VM VirtualBox VM Selector v6.1.16
 - Hypervisor functionality on the host machine enabled on BIOS
 - CentOS 7 - The Solution has only been tested on CentOS 7 as Host
 
