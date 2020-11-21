@@ -10,7 +10,7 @@ Make sure that you have the following installed:
 - CentOS 7 - The Solution has only been tested on CentOS 7 as Host
 
 ## Clone the repository to the guest
-- [Clone the repositoty] (https://github.com/popiyo/IP-3-Configuration-Management.git)
+- [Clone the repositoty](https://github.com/popiyo/IP-3-Configuration-Management.git)
 - https://github.com/popiyo/IP-3-Configuration-Management.git
 
 ## Provision the solution
